@@ -1,10 +1,10 @@
 package dm.data_load.company.pl.subsidies;
 
-import com.deltavista.data.persistence.dm.dao.CrawlingBlacklistedEntryFacade;
-import com.deltavista.data.persistence.dm.dto.gen.CrawlingBlacklistedEntry;
-import com.deltavista.dm.utils.SpringUtil;
-import com.deltavista.rep.taskprocessor.AbstractTask;
-import com.deltavista.rep.taskprocessor.BaseTaskProgressInfo;
+import com.data.persistence.dm.dao.CrawlingBlacklistedEntryFacade;
+import com.data.persistence.dm.dto.gen.CrawlingBlacklistedEntry;
+import com.dm.utils.SpringUtil;
+import com.rep.taskprocessor.AbstractTask;
+import com.rep.taskprocessor.BaseTaskProgressInfo;
 import lombok.Getter;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
