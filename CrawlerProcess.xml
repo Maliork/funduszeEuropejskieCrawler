@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TaskProcessorConfig>
+    <Tasks>
+        <Task executionMode="RepDataLoad" id="PREPROCESSING.DEFINE_VARIABLES" name="DEFINE_VARIABLES" className="com.deltavista.rep.build.tasks.common.SetContextParametersTask">
+            <Properties>
+                <Property name="set_if_not_defined_parameter_data_load_pom_name" value="loadProd"/>
+                <Property name="set_if_not_defined_parameter_initialize_download_dir_for_subsidies_files" value="./target/downloaded_subsidies_dir/"/>
+                <Property name="set_if_not_defined_parameter_initialize_source_id" value="137"/>
+                <Property name="set_if_not_defined_parameter_initialize_parsed_site" value="https://danepubliczne.gov.pl/dataset/lista_beneficjentow_funduszy_europejskich"/>
+                <Property name="set_if_not_defined_parameter_initialize_proxy" value="webproxy-pl.deltavista.com"/>
+                <Property name="set_if_not_defined_parameter_initialize_proxy_port" value="8080"/>
+                <Property name="set_if_not_defined_parameter_initialize_batch_type" value="DM_CRWALING_SUBSIDIES"/>
+            </Properties>
+        </Task>
+
+        <Task executionMode="RepCleaner" id="BATCH.START" name="Start batch" className="com.deltavista.de.dm.rep.tasks.common.BatchTask">
+            <Properties>
+                <Property name="requiredTasks" value="PREPROCESSING.DEFINE_VARIABLES"/>
+                <Property name="pomName" value="${ctx:data_load_pom_name}"/>
+                <Property name="mode" value="START"/>
+                <Property name="createBatchOnlyIfNotDefined" value="true"/>
+                <Property name="context_batch_id_key_name" value="data_batch_id"/>
+                <Property name="batchType" value="${ctx:initialize_batch_type}"/>
+                <Property name="batchLabel" value="REGULAR"/>
+                <Property name="batchSource" value=""/>
+            </Properties>
+        </Task>
+
+        <Task executionMode="RepDefault" id="SUBSIDIES_PROCESSING" name="Parsing EU site, downloading files, unzipping and splitting to separate excel files."
+              className="dm.data_load.company.pl.subsidies.AutomatizationSubsidiesProcessTask">
+            <Properties>
+                <Property name="requiredTasks" value="BATCH.START"/>
+                <Property name="downloaded_file_dir" value="${ctx:initialize_download_dir_for_subsidies_files}"/>
+                <Property name="parsed_site" value="${ctx:initialize_parsed_site}"/>
+                <Property name="proxy" value="${ctx:initialize_proxy}"/>
+                <Property name="proxy_port" value="${ctx:initialize_proxy_port}"/>
+                <Property name="source_id" value="${ctx:initialize_source_id}"/>
+            </Properties>
+        </Task>
+
+        <Task executionMode="RepCleaner" id="BATCH.COMPLETE" name="Complete batch" className="com.deltavista.de.dm.rep.tasks.common.BatchTask">
+            <Properties>
+                <Property name="requiredTasks" value="SUBSIDIES_PROCESSING"/>
+                <Property name="pomName" value="${ctx:data_load_pom_name}"/>
+                <Property name="mode" value="COMPLETE"/>
+                <Property name="createBatchOnlyIfNotDefined" value="true"/>
+                <Property name="context_batch_id_key_name" value="data_batch_id"/>
+                <Property name="batchType" value="${ctx:initialize_batch_type}"/>
+                <Property name="batchLabel" value="REGULAR"/>
+                <Property name="batchSource" value=""/>
+            </Properties>
+        </Task>
+    </Tasks>
+</TaskProcessorConfig>
